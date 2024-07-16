@@ -2,39 +2,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Run Test Hook",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/tests/test_hook.py",
-            "console": "integratedTerminal",
-            "justMyCode": false,
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}"
-            },
-            "python": "${command:python.interpreterPath}"
-        },
-        {
-            "name": "Python: Run as Admin",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/run_as_admin.ps1",
-            "console": "integratedTerminal",
-            "args": [],
-            "justMyCode": false
-        },
-        {
-            "name": "Python: Current File",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal",
-            "justMyCode": false,
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}"
-            },
-            "python": "${command:python.interpreterPath}"
-        },
-        {
             "name": "Python: Main",
             "type": "debugpy",
             "request": "launch",
@@ -43,25 +10,7 @@
             "justMyCode": false,
             "env": {
                 "PYTHONPATH": "${workspaceFolder}"
-            },
-            "python": "${command:python.interpreterPath}",
-            "args": []
-        },
-        {
-            "name": "Python: Remote Attach",
-            "type": "debugpy",
-            "request": "attach",
-            "connect": {
-                "host": "localhost",
-                "port": 5678
-            },
-            "pathMappings": [
-                {
-                    "localRoot": "${workspaceFolder}",
-                    "remoteRoot": "."
-                }
-            ],
-            "justMyCode": false
+            }
         }
     ]
 }

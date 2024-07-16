@@ -20,7 +20,12 @@ async def main():
     if hasattr(app, "aboutToQuit"):
         getattr(app, "aboutToQuit").connect(lambda: close_future(future, loop))
 
-    client = Client()
+    try:
+        client = Client()
+    except Exception as e:
+        print(f"Error initializing Client: {e}")
+        return
+
     main_window = TogJarvisUI(client)
     main_window.show()
 
@@ -37,7 +42,6 @@ if __name__ == "__main__":
         with loop:
             loop.run_until_complete(main())
     except asyncio.CancelledError:
-        # 정상적인 종료
         pass
     except Exception as e:
         print(f"Unexpected error: {e}")
