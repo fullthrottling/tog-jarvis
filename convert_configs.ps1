@@ -6,5 +6,5 @@ foreach ($file in $files) {
     $filename = [System.IO.Path]::GetFileNameWithoutExtension($file)
     
     # quicktype을 사용하여 변환된 Python 파일을 src/jsons에 저장
-    npx quicktype -o "src/jsons/$filename.py" --python "$file"
+    npx quicktype --src-lang json --lang python -o "src/jsons/$filename.py" "$file"
 }
