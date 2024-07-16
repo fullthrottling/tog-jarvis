@@ -1,0 +1,71 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Create Virtual Environment",
+            "type": "shell",
+            "command": "python -m venv venv",
+            "problemMatcher": []
+        },
+        {
+            "label": "Activate Virtual Environment",
+            "type": "shell",
+            "windows": {
+                "command": ".\\venv\\Scripts\\activate"
+            },
+            "linux": {
+                "command": "source ./venv/bin/activate"
+            },
+            "osx": {
+                "command": "source ./venv/bin/activate"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Upgrade pip",
+            "type": "shell",
+            "command": "${command:python.interpreterPath} -m pip install --upgrade pip",
+            "dependsOn": "Activate Virtual Environment",
+            "problemMatcher": []
+        },
+        {
+            "label": "Install Dependencies",
+            "type": "shell",
+            "command": "${command:python.interpreterPath} -m pip install -r requirements.txt",
+            "dependsOn": "Upgrade pip",
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Project",
+            "type": "shell",
+            "command": "${command:python.interpreterPath} src/main.py",
+            "dependsOn": "Activate Virtual Environment",
+            "problemMatcher": []
+        },
+        {
+            "label": "Debug Project",
+            "type": "shell",
+            "command": "${command:python.interpreterPath} -m debugpy --wait-for-client --listen 5678 src/main.py",
+            "dependsOn": "Activate Virtual Environment",
+            "problemMatcher": []
+        },
+        {
+            "label": "Setup and Run",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Create Virtual Environment",
+                "Activate Virtual Environment",
+                "Upgrade pip",
+                "Install Dependencies",
+                "Run Project"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Generate Config Classes",
+            "type": "shell",
+            "command": "powershell.exe -ExecutionPolicy Bypass -File .\\convert_configs.ps1",
+            "problemMatcher": []
+        }
+    ]
+}
