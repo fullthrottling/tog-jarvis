@@ -1,9 +1,8 @@
-import asyncio
 from PySide6.QtWidgets import QMainWindow, QStatusBar, QWidget, QVBoxLayout
 from PySide6.QtCore import Signal, Slot
 from .topMenu import TopMenu
 from .centerLayout import CenterLayout
-from src.ipc.ipc import IPC
+from src.ipc.ipc_handler import IPCHandler
 
 
 class TogJarvisUI(QMainWindow):
@@ -14,9 +13,8 @@ class TogJarvisUI(QMainWindow):
         self.client = client
         self.ipc = client.ipc
         self.client.setMainUI(self)
+        self.handler = IPCHandler(self.ipc, self)
         self.setupUi()
-        self.loop = asyncio.get_event_loop()
-        self.loop.create_task(self.listen_for_updates())
 
         self.update_status_signal.connect(self.updateStatusBar)
 
@@ -37,13 +35,6 @@ class TogJarvisUI(QMainWindow):
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
         self.status_bar.showMessage("Ready")
-
-    async def listen_for_updates(self):
-        while True:
-            message = await self.ipc.receive()
-            inner_size = message["inner_size"]
-            outer_size = message["outer_size"]
-            self.update_status_signal.emit(f"Inner: {inner_size}, Outer: {outer_size}")
 
     @Slot(str)
     def updateStatusBar(self, message: str):

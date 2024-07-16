@@ -1,12 +1,13 @@
-import asyncio
-
-
 class IPC:
     def __init__(self):
-        self.queue = asyncio.Queue()
+        self.subscribers = {}
 
-    async def send(self, message):
-        await self.queue.put(message)
+    def subscribe(self, message_type, callback):
+        if message_type not in self.subscribers:
+            self.subscribers[message_type] = []
+        self.subscribers[message_type].append(callback)
 
-    async def receive(self):
-        return await self.queue.get()
+    def publish(self, message_type, data):
+        if message_type in self.subscribers:
+            for callback in self.subscribers[message_type]:
+                callback(data)
