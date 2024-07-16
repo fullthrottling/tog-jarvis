@@ -20,26 +20,26 @@ def to_class(c: Type[T], x: Any) -> dict:
 
 
 class Config:
-    client_tile: int
+    client_title: str
     reference_width: int
     reference_height: int
 
-    def __init__(self, client_tile: int, reference_width: int, reference_height: int) -> None:
-        self.client_tile = client_tile
+    def __init__(self, client_title: str, reference_width: int, reference_height: int) -> None:
+        self.client_title = client_title
         self.reference_width = reference_width
         self.reference_height = reference_height
 
     @staticmethod
     def from_dict(obj: Any) -> 'Config':
         assert isinstance(obj, dict)
-        client_tile = int(from_str(obj.get("client_tile")))
+        client_title = from_str(obj.get("client_title"))
         reference_width = from_int(obj.get("reference_width"))
         reference_height = from_int(obj.get("reference_height"))
-        return Config(client_tile, reference_width, reference_height)
+        return Config(client_title, reference_width, reference_height)
 
     def to_dict(self) -> dict:
         result: dict = {}
-        result["client_tile"] = from_str(str(self.client_tile))
+        result["client_title"] = from_str(self.client_title)
         result["reference_width"] = from_int(self.reference_width)
         result["reference_height"] = from_int(self.reference_height)
         return result

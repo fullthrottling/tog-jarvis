@@ -6,24 +6,31 @@ import time
 import threading
 from src.common.togConfig import TogConfig
 from src.window_manager.window_tracker import WindowTracker
-from src.common.utils import getInnnerWindows  # Assuming this utility function is available for getting inner windows
+from src.common.utils import (
+    getInnnerWindows,
+)  # Assuming this utility function is available for getting inner windows
 
 user32 = ctypes.windll.user32
+
 
 class Client:
     def __init__(self):
         self.togConfig = TogConfig()
-        self.handle = win32gui.FindWindow(None, self.togConfig.configJson.client_tile)
+        self.handle = win32gui.FindWindow(None, self.togConfig.configJson.client_title)
         self.inner_handles = getInnnerWindows(self.handle) if self.handle else []
         self.inner_handle = self.inner_handles[0] if self.inner_handles else None
 
         if not self.handle or not self.inner_handle:
-            print(f"Window '{self.togConfig.configJson.client_tile}' not found or inner window not found.")
+            print(
+                f"Window '{self.togConfig.configJson.client_title}' not found or inner window not found."
+            )
             self.handle = None
             self.inner_handle = None
         else:
             print(f"Found window handles: {self.handle}, {self.inner_handle}")
-            self.tracker = WindowTracker(self.inner_handle, self.handle, self.on_size_changed, interval=1.0)
+            self.tracker = WindowTracker(
+                self.inner_handle, self.handle, self.on_size_changed, interval=1.0
+            )
             self.tracker.start()
 
     def setupWindowSize(self):
