@@ -1,19 +1,24 @@
-from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QStatusBar
-from PySide6.QtGui import QAction
+import asyncio
+from PySide6.QtWidgets import QMainWindow, QStatusBar, QWidget, QVBoxLayout
+from PySide6.QtCore import Signal, Slot
 from .topMenu import TopMenu
-from src.gui.centerLayout import CenterLayout
-from src.client.client import Client
+from .centerLayout import CenterLayout
+from src.ipc.ipc import IPC
 
 
 class TogJarvisUI(QMainWindow):
+    update_status_signal = Signal(str)
+
     def __init__(self, client):
         super().__init__()
         self.client = client
-        self.setupUi()
-
-    def start(self):
-        self.show()
+        self.ipc = client.ipc
         self.client.setMainUI(self)
+        self.setupUi()
+        self.loop = asyncio.get_event_loop()
+        self.loop.create_task(self.listen_for_updates())
+
+        self.update_status_signal.connect(self.updateStatusBar)
 
     def setupUi(self):
         self.setWindowTitle("Tog-Jarvis")
@@ -29,34 +34,29 @@ class TogJarvisUI(QMainWindow):
         self.center_layout = CenterLayout(self)
         main_layout.addWidget(self.center_layout)
 
-        # 상태바 추가
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
         self.status_bar.showMessage("Ready")
 
-    def onStart(self):
-        self.center_layout.onStart()
-        self.status_bar.showMessage("Started")
+    async def listen_for_updates(self):
+        while True:
+            message = await self.ipc.receive()
+            inner_size = message["inner_size"]
+            outer_size = message["outer_size"]
+            self.update_status_signal.emit(f"Inner: {inner_size}, Outer: {outer_size}")
+
+    @Slot(str)
+    def updateStatusBar(self, message: str):
+        self.status_bar.showMessage(message)
 
     def onTestFunction(self):
-        self.center_layout.onTestFunction()
-        self.status_bar.showMessage("Test function executed")
+        print("Test function triggered")
 
     def onCheckSize(self):
-        self.center_layout.onCheckSize()
-        self.status_bar.showMessage("Size checked")
+        print("Check size triggered")
 
     def onMouseTracer(self):
-        self.center_layout.onMouseTracer()
-        if self.top_menu.actionMouseTracer.isChecked():
-            self.status_bar.showMessage("Mouse tracing activated")
-        else:
-            self.status_bar.showMessage("Mouse tracing deactivated")
+        print("Mouse tracer triggered")
 
     def onCapture(self):
-        self.center_layout.onCapture()
-        self.status_bar.showMessage("Capture taken")
-
-    # 상태바 메시지를 업데이트하는 메서드 추가
-    def updateStatusBar(self, message):
-        self.status_bar.showMessage(message)
+        print("Capture triggered")

@@ -2,9 +2,6 @@ import sys
 import os
 import asyncio
 import traceback
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from PySide6.QtWidgets import QApplication
 from src.gui.togUi import TogJarvisUI
 from src.client.client import Client
@@ -17,6 +14,8 @@ async def main():
         future.cancel()
 
     app = QApplication.instance()
+    if not app:
+        app = QApplication(sys.argv)
     if hasattr(app, "aboutToQuit"):
         getattr(app, "aboutToQuit").connect(lambda: close_future(future, loop))
 
